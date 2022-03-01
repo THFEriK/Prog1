@@ -1,7 +1,7 @@
 /*
     g++ main.cpp Graph.cpp Window.cpp GUI.cpp Simple_window.cpp -o main `fltk-config --ldflags --use-images` -std=c++11
 */
-#include "../lib/std_lib_facilities.h"
+#include "./std_lib_facilities.h"
 
 class B1{
     public:
@@ -11,9 +11,10 @@ class B1{
         virtual void vf(){
             cout << "B::vf\n";
         }
+        virtual void pvf() = 0; 
 };
 
-class D1 : B1{
+class D1 : public B1{
     public:
         void vf() const{
             cout << "D:B::f\n";
@@ -21,17 +22,64 @@ class D1 : B1{
         void f(){
             cout << "D:B::f\n";
         }
+        void pvf() override{};
+
 };
+
+class D2 : public D1{
+    public:
+        void pvf() override{};
+};
+
+class B2{
+    public:
+        virtual void pvf() = 0;
+};
+
+class D21 : public B2{
+    public:
+        string data = "data";
+        void pvf() override{
+            cout << data << endl;
+        };
+};
+
+class D22 : public B2{
+    public:
+        int value = 1337;
+        void pvf() override{
+            cout << value << endl;
+        };
+};
+
+void f(B2& obj){
+    obj.pvf();
+}
 
 int main()
 {
-    B1 obj;
+    //Absztrakt osztályt nem lehet deklarálni
+    /*B1 obj;
     obj.f();
-    obj.vf();
+    obj.vf();*/
 
     D1 obj2;
     obj2.f();
     obj2.vf();
+
+    B1& obj3 = obj2;
+    obj3.f();
+    obj3.vf();
+
+    D2 obj4;
+    obj4.f();
+    obj4.vf();
+    obj4.pvf();
+
+    D21 d21;
+    D22 d22;
+    f(d21);
+    f(d22);
 }
 
 /*class Shape {
